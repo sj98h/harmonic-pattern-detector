@@ -21,6 +21,11 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // 구글 시트 CSV는 항상 네트워크에서 직접 fetch (캐시 bypass)
+  if (e.request.url.includes('docs.google.com')) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
       if (!res || res.status !== 200 || res.type === 'opaque') return res;
