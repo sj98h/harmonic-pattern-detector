@@ -1,544 +1,750 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#00d4ff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Harmonic">
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<title>하모닉 패턴 감지기</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:      #080c12;
-  --surface: #0e1520;
-  --surface2:#131e2e;
-  --border:  #1e2d42;
-  --accent:  #00d4ff;
-  --accent2: #ff6b35;
-  --green:   #00e676;
-  --text:    #c8d8e8;
-  --dim:     #4a6080;
-  --safe-top: env(safe-area-inset-top);
-  --safe-bot: env(safe-area-inset-bottom);
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#00d4ff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Harmonic" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <title>하모닉 패턴 감지기</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700&display=swap"
+      rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #080c12;
+        --surface: #0e1520;
+        --surface2: #131e2e;
+        --border: #1e2d42;
+        --accent: #00d4ff;
+        --accent2: #ff6b35;
+        --green: #00e676;
+        --text: #c8d8e8;
+        --dim: #4a6080;
+        --safe-top: env(safe-area-inset-top);
+        --safe-bot: env(safe-area-inset-bottom);
+      }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
 
-html, body { height: 100%; }
+      html,
+      body {
+        height: 100%;
+      }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans KR', sans-serif;
-  min-height: 100vh;
-  padding: calc(24px + var(--safe-top)) 16px calc(40px + var(--safe-bot));
-  overscroll-behavior: none;
-}
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Noto Sans KR", sans-serif;
+        min-height: 100vh;
+        padding: calc(24px + var(--safe-top)) 16px calc(40px + var(--safe-bot));
+        overscroll-behavior: none;
+      }
 
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: -1;
-  background-image:
-    linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
-  background-size: 36px 36px;
-}
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-image:
+          linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px);
+        background-size: 36px 36px;
+      }
 
-/* ── 헤더 */
-header {
-  text-align: center;
-  margin-bottom: 28px;
-}
-header h1 {
-  font-family: 'Space Mono', monospace;
-  font-size: clamp(16px, 4.5vw, 28px);
-  color: var(--accent);
-  letter-spacing: 2px;
-  text-shadow: 0 0 24px rgba(0,212,255,0.5);
-}
-header p {
-  color: var(--dim);
-  font-size: 11px;
-  margin-top: 5px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
+      /* ── 헤더 */
+      header {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      header h1 {
+        font-family: "Space Mono", monospace;
+        font-size: clamp(16px, 4.5vw, 28px);
+        color: var(--accent);
+        letter-spacing: 2px;
+        text-shadow: 0 0 24px rgba(0, 212, 255, 0.5);
+      }
+      header p {
+        color: var(--dim);
+        font-size: 11px;
+        margin-top: 5px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
 
-/* ── 카드 */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  max-width: 720px;
-  margin: 0 auto 20px;
-}
-.card-title {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
+      /* ── 카드 */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        max-width: 720px;
+        margin: 0 auto 20px;
+      }
+      .card-title {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 3px;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
 
-/* ── 입력 그리드 */
-.input-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-@media (min-width: 480px) {
-  .input-grid { grid-template-columns: repeat(4, 1fr); }
-}
-.input-group label {
-  display: block;
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--dim);
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-}
-.input-group input {
-  width: 100%;
-  background: #080f1a;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--accent);
-  font-family: 'Space Mono', monospace;
-  font-size: 20px;
-  padding: 10px 12px;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-.input-group input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(0,212,255,.12);
-}
-.input-group input::placeholder { color: #1e2d42; font-size: 14px; }
+      /* ── 입력 그리드 */
+      .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      @media (min-width: 480px) {
+        .input-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+      .input-group label {
+        display: block;
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        color: var(--dim);
+        letter-spacing: 2px;
+        margin-bottom: 6px;
+      }
+      .input-group input {
+        width: 100%;
+        background: #080f1a;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--accent);
+        font-family: "Space Mono", monospace;
+        font-size: 20px;
+        padding: 10px 12px;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .input-group input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.12);
+      }
+      .input-group input::placeholder {
+        color: #1e2d42;
+        font-size: 14px;
+      }
 
-/* ── 오차범위 */
-.tolerance-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-}
-.tolerance-row label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--dim);
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-input[type=range] {
-  flex: 1;
-  -webkit-appearance: none;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--border);
-  outline: none;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(0,212,255,.5);
-}
-#tolDisplay {
-  font-family: 'Space Mono', monospace;
-  font-size: 13px;
-  color: var(--accent);
-  min-width: 42px;
-  text-align: right;
-}
+      /* ── 오차범위 */
+      .tolerance-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+      .tolerance-row label {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        color: var(--dim);
+        letter-spacing: 1px;
+        white-space: nowrap;
+      }
+      input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--border);
+        outline: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+      }
+      #tolDisplay {
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+        color: var(--accent);
+        min-width: 42px;
+        text-align: right;
+      }
 
-/* ── 버튼 */
-.btn {
-  display: block;
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto 20px;
-  padding: 15px;
-  background: transparent;
-  border: 1px solid var(--accent);
-  border-radius: 10px;
-  color: var(--accent);
-  font-family: 'Space Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 3px;
-  cursor: pointer;
-  transition: background .2s, box-shadow .2s, transform .1s;
-  text-transform: uppercase;
-}
-.btn:hover  { background: rgba(0,212,255,.07); box-shadow: 0 0 20px rgba(0,212,255,.2); }
-.btn:active { transform: scale(0.98); }
+      /* ── 버튼 */
+      .btn {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto 20px;
+        padding: 15px;
+        background: transparent;
+        border: 1px solid var(--accent);
+        border-radius: 10px;
+        color: var(--accent);
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+        letter-spacing: 3px;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          box-shadow 0.2s,
+          transform 0.1s;
+        text-transform: uppercase;
+      }
+      .btn:hover {
+        background: rgba(0, 212, 255, 0.07);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+      }
+      .btn:active {
+        transform: scale(0.98);
+      }
 
-/* ── 칩 */
-.chips {
-  display: none;
-  flex-wrap: wrap;
-  gap: 6px;
-  max-width: 720px;
-  margin: 0 auto 16px;
-}
-.chip {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  color: var(--dim);
-}
-.chip.on { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,.07); }
-.chip.tol { margin-left: auto; border-color: var(--accent2); color: var(--accent2); background: rgba(255,107,53,.07); }
+      /* ── 칩 */
+      .chips {
+        display: none;
+        flex-wrap: wrap;
+        gap: 6px;
+        max-width: 720px;
+        margin: 0 auto 16px;
+      }
+      .chip {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        color: var(--dim);
+      }
+      .chip.on {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(0, 212, 255, 0.07);
+      }
+      .chip.tol {
+        margin-left: auto;
+        border-color: var(--accent2);
+        color: var(--accent2);
+        background: rgba(255, 107, 53, 0.07);
+      }
 
-/* ── 결과 */
-#results { max-width: 720px; margin: 0 auto; }
+      /* ── 결과 */
+      #results {
+        max-width: 720px;
+        margin: 0 auto;
+      }
 
-.no-match {
-  text-align: center;
-  padding: 36px 20px;
-  color: var(--accent2);
-  font-family: 'Space Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 2px;
-  border: 1px dashed #3a1a1a;
-  border-radius: 12px;
-  line-height: 2;
-}
+      .no-match {
+        text-align: center;
+        padding: 36px 20px;
+        color: var(--accent2);
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+        letter-spacing: 2px;
+        border: 1px dashed #3a1a1a;
+        border-radius: 12px;
+        line-height: 2;
+      }
 
-.summary {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--dim);
-  letter-spacing: 2px;
-  margin-bottom: 10px;
-  padding: 10px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-.summary span { color: var(--accent); font-weight: 700; }
+      .summary {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        color: var(--dim);
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        padding: 10px 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+      .summary span {
+        color: var(--accent);
+        font-weight: 700;
+      }
 
-/* ── 테이블 래퍼 (모바일 스크롤) */
-.table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-table {
-  width: 100%;
-  min-width: 560px;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-th {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--dim);
-  text-align: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface2);
-  white-space: nowrap;
-  position: sticky; top: 0;
-}
-th:nth-child(2) { text-align: left; }
-td {
-  padding: 9px 12px;
-  border-bottom: 1px solid rgba(30,45,66,.5);
-  text-align: center;
-  vertical-align: middle;
-}
-td:nth-child(2) { text-align: left; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(0,212,255,.025); }
+      /* ── 테이블 래퍼 (모바일 스크롤) */
+      .table-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      table {
+        width: 100%;
+        min-width: 560px;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      th {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 2px;
+        color: var(--dim);
+        text-align: center;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface2);
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+      }
+      th:nth-child(2) {
+        text-align: left;
+      }
+      td {
+        padding: 9px 12px;
+        border-bottom: 1px solid rgba(30, 45, 66, 0.5);
+        text-align: center;
+        vertical-align: middle;
+      }
+      td:nth-child(2) {
+        text-align: left;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: rgba(0, 212, 255, 0.025);
+      }
 
-/* ── 카테고리 배지 */
-.cat {
-  display: inline-block;
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.cat-근본   { background: rgba(42,127,255,.14);  color: #4a9fff; border: 1px solid rgba(42,127,255,.3); }
-.cat-근본p  { background: rgba(0,200,150,.14);   color: #00c896; border: 1px solid rgba(0,200,150,.3); }
-.cat-사파   { background: rgba(240,165,0,.14);   color: #f0a500; border: 1px solid rgba(240,165,0,.3); }
-.cat-반전형 { background: rgba(224,64,251,.14);  color: #e040fb; border: 1px solid rgba(224,64,251,.3); }
-.cat-짬통   { background: rgba(120,144,156,.14); color: #90a4ae; border: 1px solid rgba(120,144,156,.3); }
+      /* ── 카테고리 배지 */
+      .cat {
+        display: inline-block;
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 1px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .cat-근본 {
+        background: rgba(42, 127, 255, 0.14);
+        color: #4a9fff;
+        border: 1px solid rgba(42, 127, 255, 0.3);
+      }
+      .cat-근본p {
+        background: rgba(0, 200, 150, 0.14);
+        color: #00c896;
+        border: 1px solid rgba(0, 200, 150, 0.3);
+      }
+      .cat-사파 {
+        background: rgba(240, 165, 0, 0.14);
+        color: #f0a500;
+        border: 1px solid rgba(240, 165, 0, 0.3);
+      }
+      .cat-반전형 {
+        background: rgba(224, 64, 251, 0.14);
+        color: #e040fb;
+        border: 1px solid rgba(224, 64, 251, 0.3);
+      }
+      .cat-짬통 {
+        background: rgba(120, 144, 156, 0.14);
+        color: #90a4ae;
+        border: 1px solid rgba(120, 144, 156, 0.3);
+      }
 
-.pname { font-weight: 700; color: #ddeeff; }
-.cbadge {
-  display: inline-block;
-  font-size: 9px;
-  padding: 1px 6px;
-  border-radius: 3px;
-  margin-left: 5px;
-  vertical-align: middle;
-}
-.c수렴형 { background: rgba(0,212,255,.1);  color: var(--accent); }
-.c확장형 { background: rgba(255,107,53,.1); color: var(--accent2); }
+      .pname {
+        font-weight: 700;
+        color: #ddeeff;
+      }
+      .cbadge {
+        display: inline-block;
+        font-size: 9px;
+        padding: 1px 6px;
+        border-radius: 3px;
+        margin-left: 5px;
+        vertical-align: middle;
+      }
+      .c수렴형 {
+        background: rgba(0, 212, 255, 0.1);
+        color: var(--accent);
+      }
+      .c확장형 {
+        background: rgba(255, 107, 53, 0.1);
+        color: var(--accent2);
+      }
 
-.rc {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  white-space: nowrap;
-}
-.rc.hit    { color: var(--green); font-weight: 700; }
-.rc.unused { color: #1e2d42; }
+      .rc {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .rc.hit {
+        color: var(--green);
+        font-weight: 700;
+      }
+      .rc.unused {
+        color: #1e2d42;
+      }
 
-/* ── 애니메이션 */
-.fade { animation: fadeUp .25s ease both; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+      /* ── 애니메이션 */
+      .fade {
+        animation: fadeUp 0.25s ease both;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-/* ── 설치 배너 */
-#installBanner {
-  display: none;
-  position: fixed;
-  bottom: calc(16px + var(--safe-bot));
-  left: 50%; transform: translateX(-50%);
-  background: var(--surface2);
-  border: 1px solid var(--accent);
-  border-radius: 12px;
-  padding: 12px 20px;
-  font-size: 12px;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 4px 24px rgba(0,212,255,.2);
-  z-index: 100;
-  max-width: 340px;
-  width: calc(100% - 32px);
-}
-#installBanner button {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 14px;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
-#installBanner .close {
-  background: transparent;
-  color: var(--dim);
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 0 4px;
-  margin-left: auto;
-}
-</style>
-</head>
-<body>
+      /* ── 설치 배너 */
+      #installBanner {
+        display: none;
+        position: fixed;
+        bottom: calc(16px + var(--safe-bot));
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--surface2);
+        border: 1px solid var(--accent);
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-size: 12px;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 24px rgba(0, 212, 255, 0.2);
+        z-index: 100;
+        max-width: 340px;
+        width: calc(100% - 32px);
+      }
+      #installBanner button {
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      #installBanner .close {
+        background: transparent;
+        color: var(--dim);
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0 4px;
+        margin-left: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>◈ HARMONIC DETECTOR</h1>
+      <p>Fibonacci Pattern Recognition</p>
+    </header>
 
-<header>
-  <h1>◈ HARMONIC DETECTOR</h1>
-  <p>Fibonacci Pattern Recognition</p>
-</header>
-
-<div class="card">
-  <div class="card-title">▸ 피보나치 비율 입력</div>
-  <div class="input-grid">
-    <div class="input-group">
-      <label>XB RATIO</label>
-      <input type="number" id="xb" placeholder="0.618" step="0.001" min="0" inputmode="decimal">
+    <div class="card">
+      <div class="card-title">▸ 피보나치 비율 입력</div>
+      <div class="input-grid">
+        <div class="input-group">
+          <label>XB RATIO</label>
+          <input
+            type="number"
+            id="xb"
+            placeholder="0.618"
+            step="0.001"
+            min="0"
+            inputmode="decimal" />
+        </div>
+        <div class="input-group">
+          <label>AC RATIO</label>
+          <input
+            type="number"
+            id="ac"
+            placeholder="1.272"
+            step="0.001"
+            min="0"
+            inputmode="decimal" />
+        </div>
+        <div class="input-group">
+          <label>BD RATIO</label>
+          <input
+            type="number"
+            id="bd"
+            placeholder="1.618"
+            step="0.001"
+            min="0"
+            inputmode="decimal" />
+        </div>
+        <div class="input-group">
+          <label>XD RATIO</label>
+          <input
+            type="number"
+            id="xd"
+            placeholder="0.786"
+            step="0.001"
+            min="0"
+            inputmode="decimal" />
+        </div>
+      </div>
+      <div
+        style="
+          font-family: &quot;Space Mono&quot;, monospace;
+          font-size: 10px;
+          margin-bottom: 12px;
+          min-height: 14px;
+        "
+        id="loadStatus"></div>
+      <div class="tolerance-row">
+        <label>오차범위</label>
+        <input
+          type="range"
+          id="tolSlider"
+          min="0"
+          max="10"
+          value="2"
+          step="0.5" />
+        <span id="tolDisplay">2.0%</span>
+      </div>
     </div>
-    <div class="input-group">
-      <label>AC RATIO</label>
-      <input type="number" id="ac" placeholder="1.272" step="0.001" min="0" inputmode="decimal">
+
+    <button class="btn" onclick="detect()">▶ DETECT PATTERNS</button>
+
+    <div class="chips" id="chips"></div>
+    <div id="results"></div>
+
+    <div id="installBanner">
+      <span>홈 화면에 앱으로 추가할 수 있어요</span>
+      <button id="installBtn">설치</button>
+      <button
+        class="close"
+        onclick="
+          document.getElementById('installBanner').style.display = 'none'
+        ">
+        ✕
+      </button>
     </div>
-    <div class="input-group">
-      <label>BD RATIO</label>
-      <input type="number" id="bd" placeholder="1.618" step="0.001" min="0" inputmode="decimal">
-    </div>
-    <div class="input-group">
-      <label>XD RATIO</label>
-      <input type="number" id="xd" placeholder="0.786" step="0.001" min="0" inputmode="decimal">
-    </div>
-  </div>
-  <div class="tolerance-row">
-    <label>오차범위</label>
-    <input type="range" id="tolSlider" min="0" max="10" value="2" step="0.5">
-    <span id="tolDisplay">2.0%</span>
-  </div>
-</div>
 
-<button class="btn" onclick="detect()">▶ DETECT PATTERNS</button>
+    <script>
+      // ── 구글 시트 CSV URL 설정
+      // 시트 공유: 링크가 있는 뷰어 설정 후 아래 SHEET_ID와 GID 교체
+      const SHEET_ID = "11jdxbyuDRrz2Lx50BGmvZJiv1BBR8Fdlg60L71b1JZE"; // 구글 시트 URL의 /d/XXXXX/edit 부분
+      const SHEET_GID = "0"; // 시트 탭 하단 우클릭 > 시트 ID 확인, 기본 첫 탭은 0
+      const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
 
-<div class="chips" id="chips"></div>
-<div id="results"></div>
+      const CAT_MAP = {
+        근본: "근본",
+        "근본+": "근본p",
+        사파: "사파",
+        반전형: "반전형",
+        짬통: "짬통",
+      };
+      let PATTERNS = [];
 
-<div id="installBanner">
-  <span>홈 화면에 앱으로 추가할 수 있어요</span>
-  <button id="installBtn">설치</button>
-  <button class="close" onclick="document.getElementById('installBanner').style.display='none'">✕</button>
-</div>
+      // ── CSV 파싱
+      function parseCSV(text) {
+        const lines = text.trim().split("\n");
+        const patterns = [];
+        let curCat = "";
+        lines.slice(1).forEach((line) => {
+          // 첫 줄 헤더 skip
+          const cols = line
+            .split(",")
+            .map((c) => c.trim().replace(/^"|"$/g, ""));
+          if (cols.length < 10) return;
+          const [
+            cat,
+            name,
+            minXB,
+            maxXB,
+            minAC,
+            maxAC,
+            minBD,
+            maxBD,
+            minXD,
+            maxXD,
+            comment = "",
+          ] = cols;
+          if (cat) curCat = cat;
+          if (!name) return;
+          patterns.push([
+            curCat,
+            name,
+            +minXB,
+            +maxXB,
+            +minAC,
+            +maxAC,
+            +minBD,
+            +maxBD,
+            +minXD,
+            +maxXD,
+            comment,
+          ]);
+        });
+        return patterns;
+      }
 
-<script>
-// ── 패턴 데이터
-const PATTERNS = [
-  ["근본",   "Bat",                  0.382, 0.5,   0.382, 0.886, 1.618, 2.618, 0.886, 0.886, "수렴형"],
-  ["",       "Max Bat",              0.382, 0.618, 0.382, 0.886, 1.272, 2.618, 0.886, 0.886, "수렴형"],
-  ["",       "Alt Bat",              0.382, 0.382, 0.382, 0.886, 2,     3.618, 1.13,  1.13,  ""],
-  ["",       "Gartley",              0.618, 0.618, 0.382, 0.886, 1.272, 1.618, 0.786, 0.786, "수렴형"],
-  ["",       "Max Gartley",          0.382, 0.618, 0.382, 0.886, 1.13,  2.236, 0.618, 0.786, "수렴형"],
-  ["",       "Deep Gartley",         0.618, 0.618, 0.382, 0.886, 1.618, 2.618, 0.886, 0.886, "수렴형"],
-  ["",       "Butterfly",            0.786, 0.786, 0.382, 0.886, 1.618, 2.618, 1.272, 1.618, "확장형"],
-  ["",       "Max Butterfly",        0.618, 0.886, 0.382, 0.886, 1.272, 2.618, 1.272, 1.618, "확장형"],
-  ["",       "Butterfly 113",        0.786, 1,     0.618, 1,     1.13,  1.618, 1.13,  1.13,  ""],
-  ["",       "Crab",                 0.382, 0.618, 0.382, 0.886, 2.618, 3.618, 1.618, 1.618, "확장형"],
-  ["",       "Deep Crab",            0.886, 0.886, 0.382, 0.886, 2.618, 3.618, 1.618, 1.618, "확장형"],
-  ["근본+",  "Shark",                0.382, 0.618, 1.13,  1.618, 1.618, 2.236, 0.886, 1.13,  ""],
-  ["",       "Alt Shark",            0.446, 0.618, 0.618, 0.886, 1.618, 2.618, 0.886, 1.13,  ""],
-  ["",       "Cypher",               0.382, 0.618, 1.272, 1.414, 1.272, 2,     0.786, 0.786, ""],
-  ["사파",   "Navarro 200",          0.382, 0.786, 0.886, 1.13,  0.886, 3.618, 0.886, 1.13,  ""],
-  ["",       "Nen star",             0.382, 0.618, 1.414, 2.14,  1.272, 2,     1.272, 1.272, ""],
-  ["",       "Leonardo",             0.5,   0.5,   0.382, 0.886, 1.13,  2.618, 0.786, 0.786, ""],
-  ["",       "White Swan",           0.382, 0.786, 2,     4.236, 0.5,   0.886, 0.236, 0.886, ""],
-  ["",       "Black swan",           1.382, 2.618, 0.236, 0.5,   1.13,  2,     1.13,  2.618, ""],
-  ["반전형", "A Bat",                0.382, 0.618, 1.13,  2.618, 2,     2.618, 1.13,  1.13,  ""],
-  ["",       "A Gartley",            0.618, 0.786, 1.13,  2.618, 1.618, 1.618, 1.272, 1.272, ""],
-  ["",       "A Butterfly",          0.382, 0.618, 1.13,  2.618, 1.272, 1.272, 0.618, 0.786, ""],
-  ["",       "A Crab",               0.276, 0.446, 1.13,  2.618, 1.618, 2.618, 0.618, 0.618, ""],
-  ["",       "A Cypher",             0.5,   0.786, 0.707, 0.786, 1.618, 2.618, 1.272, 1.272, ""],
-  ["",       "A Nen star",           0.5,   0.786, 0.467, 0.707, 1.618, 2.618, 0.786, 0.786, ""],
-  ["",       "3 Drives",             1.272, 1.618, 0.618, 0.786, 1.272, 1.618, 1.618, 2.618, ""],
-  ["짬통",   "Partizan",             0.13,  3.618, 0.382, 0.382, 1.618, 1.618, 0.618, 3.618, ""],
-  ["",       "Partizan 2",           0.13,  3.618, 1.13,  1.618, 1.618, 2.236, 0.618, 3.618, ""],
-  ["",       "121 Pattern",          0.5,   0.786, 1.13,  3.618, 0.382, 0.786, 0.382, 0.786, ""],
-  ["",       "Sea Pony",             0.13,  3.618, 0.382, 0.5,   1.618, 2.618, 0.618, 3.618, ""],
-  ["",       "A 121",                1.272, 2,     0.5,   0.786, 1.272, 2,     1.272, 2.618, ""],
-  ["",       "A 3 Drives",           0.618, 0.786, 1.272, 1.618, 0.618, 0.786, 0.13,  0.886, ""],
-  ["",       "HENRY - David",        0.13,  2,     0.44,  0.618, 0.618, 0.886, 0.618, 1.618, ""],
-  ["",       "STRONG HENRY - David", 0.13,  2.618, 0.44,  0.618, 0.618, 0.886, 0.618, 1.618, ""],
-  ["",       "May-00",               1.13,  1.618, 1.618, 2.236, 0.5,   0.618, 0.5,   0.618, ""],
-  ["",       "DAVID VM 1",           0.13,  1.618, 0.382, 0.382, 1.618, 1.618, 0.618, 3.618, ""],
-  ["",       "DAVID VM 2",           1.618, 3.618, 0.382, 0.382, 1.618, 1.618, 0.618, 7.618, ""],
-  ["",       "SNORM",                0.9,   1.1,   0.9,   1.1,   0.9,   1.1,   0.618, 1.618, ""],
-  ["",       "COL Poruchik",         0.13,  3.618, 0.382, 2.618, 1,     1,     0.618, 3.618, ""],
-  ["",       "TOTAL 1",              0.382, 0.786, 0.382, 0.886, 1.272, 2.618, 0.786, 0.886, ""],
-  ["",       "TOTAL 2",              0.382, 0.786, 0.382, 0.886, 1.618, 3.618, 1.13,  1.618, ""],
-  ["",       "TOTAL 3",              0.276, 0.618, 1.13,  2.618, 1.272, 2.618, 0.618, 0.886, ""],
-  ["",       "TOTAL 4",              0.382, 0.786, 1.13,  2.618, 1.618, 2.618, 1.13,  1.272, ""],
-  ["",       "TOTAL",                0.276, 0.786, 0.382, 2.618, 1.272, 3.618, 0.618, 1.618, ""],
-  ["",       "Partizan 2.1",         0.13,  3.618, 1.13,  1.13,  1.618, 1.618, 0.618, 3.618, ""],
-  ["",       "Partizan 2.2",         0.13,  3.618, 1.13,  1.13,  2.236, 2.236, 0.618, 3.618, ""],
-  ["",       "Partizan 2.3",         0.13,  3.618, 0.618, 1.618, 1.618, 1.618, 0.618, 3.618, ""],
-  ["",       "Partizan 2.4",         0.13,  3.618, 1.618, 1.618, 2.236, 2.236, 0.618, 3.618, ""],
-  ["",       "BG1",                  0.13,  0.886, 0.618, 0.618, 1.618, 1.618, 1,     1,     ""],
-  ["",       "BG2",                  0.13,  0.886, 0.707, 0.707, 1.414, 1.414, 1,     1,     ""],
-  ["",       "BG3",                  0.13,  0.886, 0.786, 0.786, 1.272, 1.272, 1,     1,     ""],
-  ["",       "BG4",                  0.13,  0.886, 0.886, 0.886, 1.13,  1.13,  1,     1,     ""],
-  ["",       "BG5",                  0.13,  0.886, 0.5,   0.5,   2,     2,     1,     1,     ""],
-  ["",       "BG1_v2",               0.13,  0.886, 0.382, 0.382, 2.618, 2.618, 1,     1,     ""],
-  ["",       "BG2_v2",               0.13,  0.886, 0.447, 0.447, 2.237, 2.237, 1,     1,     ""],
-  ["",       "BG3_v2",               0.13,  0.886, 0.5,   0.5,   2,     2,     1,     1,     ""],
-  ["",       "BG4_v2",               0.13,  0.886, 0.618, 0.618, 1.618, 1.618, 1,     1,     ""],
-  ["",       "BG5_v2",               0.13,  0.886, 0.707, 0.707, 1.414, 1.414, 1,     1,     ""],
-  ["",       "BG6",                  0.13,  0.886, 0.786, 0.786, 1.272, 1.272, 1,     1,     ""],
-  ["",       "BG7",                  0.13,  0.886, 0.854, 0.854, 1.171, 1.171, 1,     1,     ""],
-  ["",       "BG8",                  0.13,  0.886, 0.886, 0.886, 1.13,  1.13,  1,     1,     ""],
-  ["",       "121 BG",               0.5,   0.577, 1.13,  1.733, 0.618, 0.707, 0.447, 0.786, ""],
-];
+      // ── 데이터 로드
+      async function loadPatterns() {
+        const statusEl = document.getElementById("loadStatus");
+        try {
+          statusEl.textContent = "⟳ 패턴 데이터 로딩 중...";
+          statusEl.style.color = "var(--dim)";
+          const res = await fetch(CSV_URL);
+          if (!res.ok) throw new Error("fetch 실패");
+          const text = await res.text();
+          PATTERNS = parseCSV(text);
+          statusEl.textContent = `✓ 패턴 ${PATTERNS.length}개 로드 완료`;
+          statusEl.style.color = "var(--green)";
+          setTimeout(() => (statusEl.textContent = ""), 3000);
+        } catch (e) {
+          statusEl.textContent = "⚠ 데이터 로드 실패 — SHEET_ID를 확인하세요";
+          statusEl.style.color = "var(--accent2)";
+        }
+      }
 
-const CAT_MAP = {"근본":"근본","근본+":"근본p","사파":"사파","반전형":"반전형","짬통":"짬통"};
+      window.addEventListener("DOMContentLoaded", loadPatterns);
 
-// ── 슬라이더
-const slider = document.getElementById('tolSlider');
-slider.addEventListener('input', () => {
-  document.getElementById('tolDisplay').textContent = parseFloat(slider.value).toFixed(1) + '%';
-});
+      // ── 슬라이더
+      const slider = document.getElementById("tolSlider");
+      slider.addEventListener("input", () => {
+        document.getElementById("tolDisplay").textContent =
+          parseFloat(slider.value).toFixed(1) + "%";
+      });
 
-// ── 엔터 실행
-document.querySelectorAll('input[type=number]').forEach(el => {
-  el.addEventListener('keydown', e => { if (e.key === 'Enter') detect(); });
-});
+      // ── 엔터 실행
+      document.querySelectorAll("input[type=number]").forEach((el) => {
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") detect();
+        });
+      });
 
-// ── 감지 함수
-function detect() {
-  const tol = parseFloat(slider.value) / 100;
-  const xb = parseFloat(document.getElementById('xb').value);
-  const ac = parseFloat(document.getElementById('ac').value);
-  const bd = parseFloat(document.getElementById('bd').value);
-  const xd = parseFloat(document.getElementById('xd').value);
-  const hXB=!isNaN(xb)&&xb>0, hAC=!isNaN(ac)&&ac>0,
-        hBD=!isNaN(bd)&&bd>0, hXD=!isNaN(xd)&&xd>0;
+      // ── 감지 함수
+      function detect() {
+        const tol = parseFloat(slider.value) / 100;
+        const xb = parseFloat(document.getElementById("xb").value);
+        const ac = parseFloat(document.getElementById("ac").value);
+        const bd = parseFloat(document.getElementById("bd").value);
+        const xd = parseFloat(document.getElementById("xd").value);
+        const hXB = !isNaN(xb) && xb > 0,
+          hAC = !isNaN(ac) && ac > 0,
+          hBD = !isNaN(bd) && bd > 0,
+          hXD = !isNaN(xd) && xd > 0;
 
-  if (!hXB && !hAC && !hBD && !hXD) {
-    document.getElementById('results').innerHTML =
-      '<div class="no-match fade">⚠ 비율을 하나 이상 입력하세요</div>';
-    document.getElementById('chips').style.display = 'none';
-    return;
-  }
+        if (!hXB && !hAC && !hBD && !hXD) {
+          document.getElementById("results").innerHTML =
+            '<div class="no-match fade">⚠ 비율을 하나 이상 입력하세요</div>';
+          document.getElementById("chips").style.display = "none";
+          return;
+        }
 
-  // 칩
-  const chipsEl = document.getElementById('chips');
-  chipsEl.style.display = 'flex';
-  chipsEl.innerHTML =
-    ['XB','AC','BD','XD'].map((l,i) => {
-      const v=[xb,ac,bd,xd][i], h=[hXB,hAC,hBD,hXD][i];
-      return `<div class="chip ${h?'on':''}">${l}: ${h?v:'—'}</div>`;
-    }).join('') +
-    `<div class="chip tol">±${(tol*100).toFixed(1)}%</div>`;
+        // 칩
+        const chipsEl = document.getElementById("chips");
+        chipsEl.style.display = "flex";
+        chipsEl.innerHTML =
+          ["XB", "AC", "BD", "XD"]
+            .map((l, i) => {
+              const v = [xb, ac, bd, xd][i],
+                h = [hXB, hAC, hBD, hXD][i];
+              return `<div class="chip ${h ? "on" : ""}">${l}: ${h ? v : "—"}</div>`;
+            })
+            .join("") +
+          `<div class="chip tol">±${(tol * 100).toFixed(1)}%</div>`;
 
-  // 매칭
-  const matched = [];
-  let curCat = '';
-  PATTERNS.forEach(p => {
-    const [cat,name,minXB,maxXB,minAC,maxAC,minBD,maxBD,minXD,maxXD,comment] = p;
-    if (cat !== '') curCat = cat;
-    let ok = true;
-    if (hXB && !(xb >= minXB*(1-tol) && xb <= maxXB*(1+tol))) ok = false;
-    if (hAC && !(ac >= minAC*(1-tol) && ac <= maxAC*(1+tol))) ok = false;
-    if (hBD && !(bd >= minBD*(1-tol) && bd <= maxBD*(1+tol))) ok = false;
-    if (hXD && !(xd >= minXD*(1-tol) && xd <= maxXD*(1+tol))) ok = false;
-    if (ok) matched.push({cat:curCat,name,minXB,maxXB,minAC,maxAC,minBD,maxBD,minXD,maxXD,comment});
-  });
+        // 매칭
+        const matched = [];
+        let curCat = "";
+        PATTERNS.forEach((p) => {
+          const [
+            cat,
+            name,
+            minXB,
+            maxXB,
+            minAC,
+            maxAC,
+            minBD,
+            maxBD,
+            minXD,
+            maxXD,
+            comment,
+          ] = p;
+          if (cat !== "") curCat = cat;
+          let ok = true;
+          if (hXB && !(xb >= minXB * (1 - tol) && xb <= maxXB * (1 + tol)))
+            ok = false;
+          if (hAC && !(ac >= minAC * (1 - tol) && ac <= maxAC * (1 + tol)))
+            ok = false;
+          if (hBD && !(bd >= minBD * (1 - tol) && bd <= maxBD * (1 + tol)))
+            ok = false;
+          if (hXD && !(xd >= minXD * (1 - tol) && xd <= maxXD * (1 + tol)))
+            ok = false;
+          if (ok)
+            matched.push({
+              cat: curCat,
+              name,
+              minXB,
+              maxXB,
+              minAC,
+              maxAC,
+              minBD,
+              maxBD,
+              minXD,
+              maxXD,
+              comment,
+            });
+        });
 
-  const el = document.getElementById('results');
-  if (!matched.length) {
-    el.innerHTML = '<div class="no-match fade">❌ 매칭된 패턴 없음<br><small style="font-size:10px;color:#4a6080;letter-spacing:1px">오차범위를 늘리거나 비율을 확인하세요</small></div>';
-    return;
-  }
+        const el = document.getElementById("results");
+        if (!matched.length) {
+          el.innerHTML =
+            '<div class="no-match fade">❌ 매칭된 패턴 없음<br><small style="font-size:10px;color:#4a6080;letter-spacing:1px">오차범위를 늘리거나 비율을 확인하세요</small></div>';
+          return;
+        }
 
-  const rows = matched.map(p => {
-    const ck = CAT_MAP[p.cat]||'';
-    const catB = p.cat ? `<span class="cat cat-${ck}">${p.cat}</span>` : '';
-    const comB = p.comment ? `<span class="cbadge c${p.comment}">${p.comment}</span>` : '';
-    const rt = (a,b) => a===b ? String(a) : `${a} ~ ${b}`;
-    const tds = [[p.minXB,p.maxXB,hXB],[p.minAC,p.maxAC,hAC],[p.minBD,p.maxBD,hBD],[p.minXD,p.maxXD,hXD]]
-      .map(([a,b,h]) => `<td class="rc ${h?'hit':'unused'}">${rt(a,b)}</td>`).join('');
-    return `<tr><td>${catB}</td><td><span class="pname">${p.name}</span>${comB}</td>${tds}</tr>`;
-  }).join('');
+        const rows = matched
+          .map((p) => {
+            const ck = CAT_MAP[p.cat] || "";
+            const catB = p.cat
+              ? `<span class="cat cat-${ck}">${p.cat}</span>`
+              : "";
+            const comB = p.comment
+              ? `<span class="cbadge c${p.comment}">${p.comment}</span>`
+              : "";
+            const rt = (a, b) => (a === b ? String(a) : `${a} ~ ${b}`);
+            const tds = [
+              [p.minXB, p.maxXB, hXB],
+              [p.minAC, p.maxAC, hAC],
+              [p.minBD, p.maxBD, hBD],
+              [p.minXD, p.maxXD, hXD],
+            ]
+              .map(
+                ([a, b, h]) =>
+                  `<td class="rc ${h ? "hit" : "unused"}">${rt(a, b)}</td>`,
+              )
+              .join("");
+            return `<tr><td>${catB}</td><td><span class="pname">${p.name}</span>${comB}</td>${tds}</tr>`;
+          })
+          .join("");
 
-  el.innerHTML = `
+        el.innerHTML = `
     <div class="summary fade">MATCHED <span>${matched.length}</span> PATTERNS</div>
     <div class="table-wrap fade">
       <table>
@@ -549,30 +755,30 @@ function detect() {
         <tbody>${rows}</tbody>
       </table>
     </div>`;
-}
+      }
 
-// ── PWA 설치 배너
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const banner = document.getElementById('installBanner');
-  banner.style.display = 'flex';
-  document.getElementById('installBtn').addEventListener('click', () => {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      banner.style.display = 'none';
-      deferredPrompt = null;
-    });
-  });
-});
+      // ── PWA 설치 배너
+      let deferredPrompt;
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const banner = document.getElementById("installBanner");
+        banner.style.display = "flex";
+        document.getElementById("installBtn").addEventListener("click", () => {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(() => {
+            banner.style.display = "none";
+            deferredPrompt = null;
+          });
+        });
+      });
 
-// ── Service Worker 등록
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js');
-  });
-}
-</script>
-</body>
+      // ── Service Worker 등록
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js");
+        });
+      }
+    </script>
+  </body>
 </html>
