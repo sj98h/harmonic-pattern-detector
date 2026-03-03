@@ -1,0 +1,24 @@
+{
+  "name": "하모닉 패턴 감지기",
+  "short_name": "Harmonic",
+  "description": "하모닉 패턴 자동 감지 도구",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#080c12",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
