@@ -31,22 +31,20 @@
         --green: #00e676;
         --text: #c8d8e8;
         --dim: #4a6080;
+        --dim2: #6a8aaa;
         --safe-top: env(safe-area-inset-top);
         --safe-bot: env(safe-area-inset-bottom);
       }
-
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
         -webkit-tap-highlight-color: transparent;
       }
-
       html,
       body {
         height: 100%;
       }
-
       body {
         background: var(--bg);
         color: var(--text);
@@ -55,7 +53,6 @@
         padding: calc(24px + var(--safe-top)) 16px calc(40px + var(--safe-bot));
         overscroll-behavior: none;
       }
-
       body::before {
         content: "";
         position: fixed;
@@ -66,8 +63,6 @@
           linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px);
         background-size: 36px 36px;
       }
-
-      /* ── 헤더 */
       header {
         text-align: center;
         margin-bottom: 28px;
@@ -86,8 +81,6 @@
         letter-spacing: 2px;
         text-transform: uppercase;
       }
-
-      /* ── 카드 */
       .card {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -105,9 +98,10 @@
         margin-bottom: 16px;
         padding-bottom: 10px;
         border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
-
-      /* ── 입력 그리드 */
       .input-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -121,8 +115,8 @@
       .input-group label {
         display: block;
         font-family: "Space Mono", monospace;
-        font-size: 10px;
-        color: var(--dim);
+        font-size: 11px;
+        color: var(--dim2);
         letter-spacing: 2px;
         margin-bottom: 6px;
       }
@@ -145,11 +139,9 @@
         box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.12);
       }
       .input-group input::placeholder {
-        color: #1e2d42;
+        color: #2a3d55;
         font-size: 14px;
       }
-
-      /* ── 오차범위 */
       .tolerance-row {
         display: flex;
         align-items: center;
@@ -160,8 +152,8 @@
       }
       .tolerance-row label {
         font-family: "Space Mono", monospace;
-        font-size: 10px;
-        color: var(--dim);
+        font-size: 11px;
+        color: var(--dim2);
         letter-spacing: 1px;
         white-space: nowrap;
       }
@@ -190,7 +182,131 @@
         text-align: right;
       }
 
-      /* ── 버튼 */
+      /* 초기화 버튼 */
+      .clear-btn {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--dim2);
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
+        padding: 4px 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .clear-btn:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      /* 카테고리 필터 탭 */
+      .cat-tabs {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        max-width: 720px;
+        margin: 0 auto 12px;
+      }
+      .cat-tab {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--dim2);
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .cat-tab:hover {
+        border-color: var(--dim2);
+      }
+      .cat-tab.active {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(0, 212, 255, 0.08);
+      }
+      .cat-tab[data-cat="근본"].active {
+        border-color: #4a9fff;
+        color: #4a9fff;
+        background: rgba(42, 127, 255, 0.1);
+      }
+      .cat-tab[data-cat="근본+"].active {
+        border-color: #00c896;
+        color: #00c896;
+        background: rgba(0, 200, 150, 0.1);
+      }
+      .cat-tab[data-cat="사파"].active {
+        border-color: #f0a500;
+        color: #f0a500;
+        background: rgba(240, 165, 0, 0.1);
+      }
+      .cat-tab[data-cat="반전형"].active {
+        border-color: #e040fb;
+        color: #e040fb;
+        background: rgba(224, 64, 251, 0.1);
+      }
+      .cat-tab[data-cat="짬통"].active {
+        border-color: #90a4ae;
+        color: #90a4ae;
+        background: rgba(120, 144, 156, 0.1);
+      }
+
+      /* 매칭만 보기 토글 */
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 720px;
+        margin: 0 auto 16px;
+        justify-content: flex-end;
+      }
+      .toggle-label {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        color: var(--dim2);
+        letter-spacing: 1px;
+        cursor: pointer;
+      }
+      .toggle {
+        position: relative;
+        width: 40px;
+        height: 22px;
+        cursor: pointer;
+      }
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-track {
+        position: absolute;
+        inset: 0;
+        background: var(--border);
+        border-radius: 11px;
+        transition: background 0.2s;
+      }
+      .toggle input:checked + .toggle-track {
+        background: var(--green);
+      }
+      .toggle-thumb {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.2s;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      }
+      .toggle input:checked ~ .toggle-thumb {
+        transform: translateX(18px);
+      }
+
       .btn {
         display: block;
         width: 100%;
@@ -219,69 +335,75 @@
         transform: scale(0.98);
       }
 
-      /* ── 칩 */
-      .chips {
-        display: none;
-        flex-wrap: wrap;
-        gap: 6px;
+      .search-wrap {
         max-width: 720px;
-        margin: 0 auto 16px;
+        margin: 0 auto 12px;
+        position: relative;
       }
-      .chip {
-        font-family: "Space Mono", monospace;
-        font-size: 10px;
-        padding: 4px 10px;
-        border-radius: 20px;
+      .search-wrap input {
+        width: 100%;
+        background: var(--surface);
         border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-family: "Noto Sans KR", sans-serif;
+        font-size: 15px;
+        padding: 12px 44px 12px 16px;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .search-wrap input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1);
+      }
+      .search-wrap input::placeholder {
         color: var(--dim);
       }
-      .chip.on {
-        border-color: var(--accent);
-        color: var(--accent);
-        background: rgba(0, 212, 255, 0.07);
-      }
-      .chip.tol {
-        margin-left: auto;
-        border-color: var(--accent2);
-        color: var(--accent2);
-        background: rgba(255, 107, 53, 0.07);
+      .search-clear {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--dim);
+        font-size: 18px;
+        cursor: pointer;
+        display: none;
+        line-height: 1;
+        padding: 4px;
       }
 
-      /* ── 결과 */
       #results {
         max-width: 720px;
         margin: 0 auto;
       }
-
-      .no-match {
-        text-align: center;
-        padding: 36px 20px;
-        color: var(--accent2);
-        font-family: "Space Mono", monospace;
-        font-size: 13px;
-        letter-spacing: 2px;
-        border: 1px dashed #3a1a1a;
-        border-radius: 12px;
-        line-height: 2;
-      }
-
       .summary {
         font-family: "Space Mono", monospace;
         font-size: 11px;
-        color: var(--dim);
+        color: var(--dim2);
         letter-spacing: 2px;
         margin-bottom: 10px;
         padding: 10px 14px;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
       }
       .summary span {
         color: var(--accent);
         font-weight: 700;
       }
-
-      /* ── 테이블 래퍼 (모바일 스크롤) */
+      .summary .hint {
+        font-size: 10px;
+        color: var(--dim);
+      }
       .table-wrap {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -294,15 +416,15 @@
         width: 100%;
         min-width: 560px;
         border-collapse: collapse;
-        font-size: 12px;
+        font-size: 13px;
       }
       th {
         font-family: "Space Mono", monospace;
-        font-size: 9px;
+        font-size: 10px;
         letter-spacing: 2px;
-        color: var(--dim);
+        color: var(--dim2);
         text-align: center;
-        padding: 10px 12px;
+        padding: 11px 12px;
         border-bottom: 1px solid var(--border);
         background: var(--surface2);
         white-space: nowrap;
@@ -313,7 +435,7 @@
         text-align: left;
       }
       td {
-        padding: 9px 12px;
+        padding: 10px 12px;
         border-bottom: 1px solid rgba(30, 45, 66, 0.5);
         text-align: center;
         vertical-align: middle;
@@ -325,16 +447,21 @@
         border-bottom: none;
       }
       tr:hover td {
-        background: rgba(0, 212, 255, 0.025);
+        background: rgba(0, 212, 255, 0.03);
       }
-
-      /* ── 카테고리 배지 */
+      tr.matched td {
+        background: rgba(0, 230, 118, 0.04);
+      }
+      tr.matched td:nth-child(2) {
+        border-left: 2px solid var(--green);
+        padding-left: 10px;
+      }
       .cat {
         display: inline-block;
         font-family: "Space Mono", monospace;
-        font-size: 9px;
+        font-size: 10px;
         letter-spacing: 1px;
-        padding: 2px 7px;
+        padding: 3px 8px;
         border-radius: 4px;
         font-weight: 700;
         white-space: nowrap;
@@ -364,14 +491,14 @@
         color: #90a4ae;
         border: 1px solid rgba(120, 144, 156, 0.3);
       }
-
       .pname {
         font-weight: 700;
         color: #ddeeff;
+        font-size: 13px;
       }
       .cbadge {
         display: inline-block;
-        font-size: 9px;
+        font-size: 10px;
         padding: 1px 6px;
         border-radius: 3px;
         margin-left: 5px;
@@ -385,21 +512,84 @@
         background: rgba(255, 107, 53, 0.1);
         color: var(--accent2);
       }
-
       .rc {
         font-family: "Space Mono", monospace;
-        font-size: 10px;
+        font-size: 11px;
         white-space: nowrap;
       }
       .rc.hit {
         color: var(--green);
         font-weight: 700;
+        font-size: 12px;
       }
       .rc.unused {
-        color: #1e2d42;
+        color: var(--dim2);
+      }
+      footer {
+        max-width: 720px;
+        margin: 40px auto 0;
+        border-top: 1px solid var(--border);
+        padding-top: 24px;
+      }
+      .footer-inner {
+        text-align: center;
+      }
+      .footer-title {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 3px;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+      .footer-desc {
+        font-size: 12px;
+        color: var(--dim);
+        margin-bottom: 14px;
+      }
+      .footer-addr {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        transition: border-color 0.2s;
+        max-width: 100%;
+        overflow: hidden;
+      }
+      .footer-addr:hover {
+        border-color: var(--accent);
+      }
+      .footer-addr span#addrText {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        color: var(--dim2);
+        word-break: break-all;
+        text-align: left;
+      }
+      .copy-icon {
+        font-size: 16px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .copy-msg {
+        display: block;
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        color: var(--green);
+        letter-spacing: 2px;
+        margin-top: 8px;
+        min-height: 16px;
       }
 
-      /* ── 애니메이션 */
+      mark {
+        background: rgba(0, 212, 255, 0.2);
+        color: var(--accent);
+        border-radius: 2px;
+        padding: 0 1px;
+      }
       .fade {
         animation: fadeUp 0.25s ease both;
       }
@@ -413,8 +603,6 @@
           transform: translateY(0);
         }
       }
-
-      /* ── 설치 배너 */
       #installBanner {
         display: none;
         position: fixed;
@@ -425,9 +613,8 @@
         border: 1px solid var(--accent);
         border-radius: 12px;
         padding: 12px 20px;
-        font-size: 12px;
+        font-size: 13px;
         color: var(--text);
-        display: flex;
         align-items: center;
         gap: 12px;
         box-shadow: 0 4px 24px rgba(0, 212, 255, 0.2);
@@ -465,11 +652,19 @@
     </header>
 
     <div class="card">
-      <div class="card-title">▸ 피보나치 비율 입력</div>
+      <div class="card-title">
+        <span
+          >▸ 피보나치 비율 입력
+          <span style="color: var(--dim); font-size: 9px"
+            >— 빈칸은 무시됩니다</span
+          ></span
+        >
+        <button class="clear-btn" onclick="clearInputs()">✕ 초기화</button>
+      </div>
       <div class="input-grid">
         <div class="input-group">
-          <label>XB RATIO</label>
-          <input
+          <label>XB RATIO</label
+          ><input
             type="number"
             id="xb"
             placeholder="0.618"
@@ -478,8 +673,8 @@
             inputmode="decimal" />
         </div>
         <div class="input-group">
-          <label>AC RATIO</label>
-          <input
+          <label>AC RATIO</label
+          ><input
             type="number"
             id="ac"
             placeholder="1.272"
@@ -488,8 +683,8 @@
             inputmode="decimal" />
         </div>
         <div class="input-group">
-          <label>BD RATIO</label>
-          <input
+          <label>BD RATIO</label
+          ><input
             type="number"
             id="bd"
             placeholder="1.618"
@@ -498,8 +693,8 @@
             inputmode="decimal" />
         </div>
         <div class="input-group">
-          <label>XD RATIO</label>
-          <input
+          <label>XD RATIO</label
+          ><input
             type="number"
             id="xd"
             placeholder="0.786"
@@ -511,9 +706,9 @@
       <div
         style="
           font-family: &quot;Space Mono&quot;, monospace;
-          font-size: 10px;
-          margin-bottom: 12px;
-          min-height: 14px;
+          font-size: 11px;
+          margin-top: 12px;
+          min-height: 16px;
         "
         id="loadStatus"></div>
       <div class="tolerance-row">
@@ -529,20 +724,35 @@
       </div>
     </div>
 
+    <!-- 검색창 + 새로고침 버튼 -->
     <div
-      style="display: flex; gap: 10px; max-width: 720px; margin: 0 auto 20px">
-      <button class="btn" style="margin: 0; flex: 1" onclick="detect()">
-        ▶ DETECT PATTERNS
-      </button>
+      style="
+        display: flex;
+        gap: 8px;
+        max-width: 720px;
+        margin: 0 auto 12px;
+        align-items: center;
+      ">
+      <div class="search-wrap" style="margin: 0; flex: 1">
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="패턴명 또는 카테고리 검색..."
+          oninput="onSearch(this.value)" />
+        <button class="search-clear" id="searchClear" onclick="clearSearch()">
+          ✕
+        </button>
+      </div>
       <button
         class="btn"
         style="
           margin: 0;
-          width: 52px;
+          width: 48px;
+          height: 48px;
           letter-spacing: 0;
           font-size: 20px;
           flex-shrink: 0;
-          padding: 15px 0;
+          padding: 0;
         "
         onclick="hardReload()"
         title="데이터 새로고침">
@@ -550,8 +760,37 @@
       </button>
     </div>
 
-    <div class="chips" id="chips"></div>
+    <!-- 카테고리 필터 탭 (동적 생성) -->
+    <div class="cat-tabs" id="catTabs"></div>
+
+    <!-- 매칭만 보기 토글 -->
+    <div class="toggle-row">
+      <label class="toggle-label" for="matchToggle">매칭만 보기</label>
+      <label class="toggle">
+        <input type="checkbox" id="matchToggle" onchange="renderTable()" />
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+
     <div id="results"></div>
+
+    <!-- 푸터 -->
+    <footer>
+      <div class="footer-inner">
+        <p class="footer-title">☕ Support</p>
+        <p class="footer-desc">
+          이 도구가 유용하셨다면 비트코인으로 후원해주세요
+        </p>
+        <div class="footer-addr" onclick="copyAddr()" title="클릭하여 복사">
+          <span id="addrText"
+            >bc1ppf0u3aevdf2gqnuthwt9c6wgphem2lugg4a5m57egxnan4v3x9hskpfmur</span
+          >
+          <span class="copy-icon">⎘</span>
+        </div>
+        <span id="copyMsg" class="copy-msg"></span>
+      </div>
+    </footer>
 
     <div id="installBanner">
       <span>홈 화면에 앱으로 추가할 수 있어요</span>
@@ -566,12 +805,9 @@
     </div>
 
     <script>
-      // ── 구글 시트 CSV URL 설정
-      // 시트 공유: 링크가 있는 뷰어 설정 후 아래 SHEET_ID와 GID 교체
-      const SHEET_ID = "11jdxbyuDRrz2Lx50BGmvZJiv1BBR8Fdlg60L71b1JZE"; // 구글 시트 URL의 /d/XXXXX/edit 부분
-      const SHEET_GID = "1831499660"; // 시트 탭 하단 우클릭 > 시트 ID 확인, 기본 첫 탭은 0
+      const SHEET_ID = "11jdxbyuDRrz2Lx50BGmvZJiv1BBR8Fdlg60L71b1JZE";
+      const SHEET_GID = "1831499660";
       const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
-
       const CAT_MAP = {
         근본: "근본",
         "근본+": "근본p",
@@ -579,15 +815,16 @@
         반전형: "반전형",
         짬통: "짬통",
       };
-      let PATTERNS = [];
 
-      // ── CSV 파싱
+      let PATTERNS = [];
+      let currentSearch = "";
+      let currentCat = "ALL";
+
       function parseCSV(text) {
         const lines = text.trim().split("\n");
-        const patterns = [];
+        const out = [];
         let curCat = "";
         lines.slice(1).forEach((line) => {
-          // 첫 줄 헤더 skip
           const cols = line
             .split(",")
             .map((c) => c.trim().replace(/^"|"$/g, ""));
@@ -607,7 +844,7 @@
           ] = cols;
           if (cat) curCat = cat;
           if (!name) return;
-          patterns.push([
+          out.push([
             curCat,
             name,
             +minXB,
@@ -621,35 +858,54 @@
             comment,
           ]);
         });
-        return patterns;
+        return out;
       }
 
-      // ── 데이터 로드
       async function loadPatterns() {
-        const statusEl = document.getElementById("loadStatus");
+        const st = document.getElementById("loadStatus");
         try {
-          statusEl.textContent = "⟳ 패턴 데이터 로딩 중...";
-          statusEl.style.color = "var(--dim)";
+          st.textContent = "⟳ 로딩 중...";
+          st.style.color = "var(--dim)";
           const res = await fetch(CSV_URL);
-          if (!res.ok) throw new Error("fetch 실패");
-          const text = await res.text();
-          PATTERNS = parseCSV(text);
-          statusEl.textContent = `✓ 패턴 ${PATTERNS.length}개 로드 완료`;
-          statusEl.style.color = "var(--green)";
-          setTimeout(() => (statusEl.textContent = ""), 3000);
-        } catch (e) {
-          statusEl.textContent = "⚠ 데이터 로드 실패 — SHEET_ID를 확인하세요";
-          statusEl.style.color = "var(--accent2)";
+          if (!res.ok) throw new Error();
+          PATTERNS = parseCSV(await res.text());
+          localStorage.setItem("harmonic_patterns", JSON.stringify(PATTERNS));
+          st.textContent = `✓ ${PATTERNS.length}개 패턴 로드 완료`;
+          st.style.color = "var(--green)";
+          setTimeout(() => (st.textContent = ""), 3000);
+        } catch {
+          const cached = localStorage.getItem("harmonic_patterns");
+          if (cached) {
+            PATTERNS = JSON.parse(cached);
+            st.textContent = `📦 오프라인 캐시 (${PATTERNS.length}개)`;
+            st.style.color = "var(--accent2)";
+          } else {
+            st.textContent = "⚠ 로드 실패 — SHEET_ID 확인";
+            st.style.color = "var(--accent2)";
+          }
         }
+        buildCatTabs();
+        renderTable();
       }
 
-      window.addEventListener("DOMContentLoaded", loadPatterns);
+      function buildCatTabs() {
+        const cats = [
+          "ALL",
+          ...new Set(PATTERNS.map((p) => p[0]).filter(Boolean)),
+        ];
+        const tabsEl = document.getElementById("catTabs");
+        tabsEl.innerHTML = cats
+          .map(
+            (cat) =>
+              `<button class="cat-tab${cat === "ALL" ? " active" : ""}" data-cat="${cat}" onclick="setCat('${cat}')">${cat}</button>`,
+          )
+          .join("");
+      }
 
       async function hardReload() {
         const btn = document.querySelector('[onclick="hardReload()"]');
         btn.style.opacity = "0.4";
         btn.style.pointerEvents = "none";
-        // 서비스워커 캐시 삭제 후 재로드
         if ("caches" in window) {
           const keys = await caches.keys();
           await Promise.all(keys.map((k) => caches.delete(k)));
@@ -659,22 +915,61 @@
         btn.style.pointerEvents = "auto";
       }
 
-      // ── 슬라이더
+      function clearInputs() {
+        ["xb", "ac", "bd", "xd"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        renderTable();
+      }
+
+      function setCat(cat) {
+        currentCat = cat;
+        document.querySelectorAll(".cat-tab").forEach((t) => {
+          t.classList.toggle("active", t.dataset.cat === cat);
+        });
+        // 매칭만 보기 토글 — 카테고리 바꾸면 off
+        document.getElementById("matchToggle").checked = false;
+        renderTable();
+      }
+
+      function onSearch(val) {
+        currentSearch = val.trim();
+        document.getElementById("searchClear").style.display = currentSearch
+          ? "block"
+          : "none";
+        renderTable();
+      }
+      function clearSearch() {
+        document.getElementById("searchInput").value = "";
+        onSearch("");
+      }
+
       const slider = document.getElementById("tolSlider");
       slider.addEventListener("input", () => {
         document.getElementById("tolDisplay").textContent =
           parseFloat(slider.value).toFixed(1) + "%";
+        renderTable();
       });
-
-      // ── 엔터 실행
       document.querySelectorAll("input[type=number]").forEach((el) => {
+        el.addEventListener("input", renderTable);
         el.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") detect();
+          if (e.key === "Enter") renderTable();
         });
       });
 
-      // ── 감지 함수
-      function detect() {
+      function hl(text, q) {
+        if (!q) return text;
+        return text.replace(
+          new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi"),
+          "<mark>$1</mark>",
+        );
+      }
+      function rt(a, b) {
+        return a === b ? String(a) : `${a} ~ ${b}`;
+      }
+
+      function renderTable() {
+        if (!PATTERNS.length) return;
         const tol = parseFloat(slider.value) / 100;
         const xb = parseFloat(document.getElementById("xb").value);
         const ac = parseFloat(document.getElementById("ac").value);
@@ -684,116 +979,119 @@
           hAC = !isNaN(ac) && ac > 0,
           hBD = !isNaN(bd) && bd > 0,
           hXD = !isNaN(xd) && xd > 0;
+        const anyInput = hXB || hAC || hBD || hXD;
+        const q = currentSearch.toLowerCase();
+        const matchOnly = document.getElementById("matchToggle").checked;
 
-        if (!hXB && !hAC && !hBD && !hXD) {
-          document.getElementById("results").innerHTML =
-            '<div class="no-match fade">⚠ 비율을 하나 이상 입력하세요</div>';
-          document.getElementById("chips").style.display = "none";
-          return;
+        function isMatch(p) {
+          if (!anyInput) return false;
+          const [, , mnXB, mxXB, mnAC, mxAC, mnBD, mxBD, mnXD, mxXD] = p;
+          if (hXB && !(xb >= mnXB * (1 - tol) && xb <= mxXB * (1 + tol)))
+            return false;
+          if (hAC && !(ac >= mnAC * (1 - tol) && ac <= mxAC * (1 + tol)))
+            return false;
+          if (hBD && !(bd >= mnBD * (1 - tol) && bd <= mxBD * (1 + tol)))
+            return false;
+          if (hXD && !(xd >= mnXD * (1 - tol) && xd <= mxXD * (1 + tol)))
+            return false;
+          return true;
         }
 
-        // 칩
-        const chipsEl = document.getElementById("chips");
-        chipsEl.style.display = "flex";
-        chipsEl.innerHTML =
-          ["XB", "AC", "BD", "XD"]
-            .map((l, i) => {
-              const v = [xb, ac, bd, xd][i],
-                h = [hXB, hAC, hBD, hXD][i];
-              return `<div class="chip ${h ? "on" : ""}">${l}: ${h ? v : "—"}</div>`;
-            })
-            .join("") +
-          `<div class="chip tol">±${(tol * 100).toFixed(1)}%</div>`;
+        let filtered = PATTERNS;
+        // 카테고리 필터
+        if (currentCat !== "ALL")
+          filtered = filtered.filter((p) => p[0] === currentCat);
+        // 검색 필터
+        if (q)
+          filtered = filtered.filter(
+            (p) =>
+              p[0].toLowerCase().includes(q) || p[1].toLowerCase().includes(q),
+          );
+        // 매칭만 보기
+        if (matchOnly && anyInput) filtered = filtered.filter(isMatch);
 
-        // 매칭
-        const matched = [];
-        let curCat = "";
-        PATTERNS.forEach((p) => {
-          const [
-            cat,
-            name,
-            minXB,
-            maxXB,
-            minAC,
-            maxAC,
-            minBD,
-            maxBD,
-            minXD,
-            maxXD,
-            comment,
-          ] = p;
-          if (cat !== "") curCat = cat;
-          let ok = true;
-          if (hXB && !(xb >= minXB * (1 - tol) && xb <= maxXB * (1 + tol)))
-            ok = false;
-          if (hAC && !(ac >= minAC * (1 - tol) && ac <= maxAC * (1 + tol)))
-            ok = false;
-          if (hBD && !(bd >= minBD * (1 - tol) && bd <= maxBD * (1 + tol)))
-            ok = false;
-          if (hXD && !(xd >= minXD * (1 - tol) && xd <= maxXD * (1 + tol)))
-            ok = false;
-          if (ok)
-            matched.push({
-              cat: curCat,
-              name,
-              minXB,
-              maxXB,
-              minAC,
-              maxAC,
-              minBD,
-              maxBD,
-              minXD,
-              maxXD,
-              comment,
-            });
-        });
+        // 매칭된 것 위로 정렬
+        const sorted =
+          anyInput && !matchOnly
+            ? [...filtered].sort((a, b) => isMatch(b) - isMatch(a))
+            : filtered;
+
+        const matchCount = anyInput ? sorted.filter(isMatch).length : 0;
 
         const el = document.getElementById("results");
-        if (!matched.length) {
-          el.innerHTML =
-            '<div class="no-match fade">❌ 매칭된 패턴 없음<br><small style="font-size:10px;color:#4a6080;letter-spacing:1px">오차범위를 늘리거나 비율을 확인하세요</small></div>';
+        if (!sorted.length) {
+          el.innerHTML = `<div style="text-align:center;padding:36px;color:var(--dim);font-family:'Space Mono',monospace;font-size:13px;letter-spacing:2px">${matchOnly ? "매칭된 패턴 없음" : "검색 결과 없음"}</div>`;
           return;
         }
 
-        const rows = matched
+        const rows = sorted
           .map((p) => {
-            const ck = CAT_MAP[p.cat] || "";
-            const catB = p.cat
-              ? `<span class="cat cat-${ck}">${p.cat}</span>`
+            const [
+              cat,
+              name,
+              mnXB,
+              mxXB,
+              mnAC,
+              mxAC,
+              mnBD,
+              mxBD,
+              mnXD,
+              mxXD,
+              comment,
+            ] = p;
+            const matched = isMatch(p);
+            const ck = CAT_MAP[cat] || "";
+            const catB = cat
+              ? `<span class="cat cat-${ck}">${hl(cat, q)}</span>`
               : "";
-            const comB = p.comment
-              ? `<span class="cbadge c${p.comment}">${p.comment}</span>`
+            const comB = comment
+              ? `<span class="cbadge c${comment}">${comment}</span>`
               : "";
-            const rt = (a, b) => (a === b ? String(a) : `${a} ~ ${b}`);
             const tds = [
-              [p.minXB, p.maxXB, hXB],
-              [p.minAC, p.maxAC, hAC],
-              [p.minBD, p.maxBD, hBD],
-              [p.minXD, p.maxXD, hXD],
+              [mnXB, mxXB, hXB, xb],
+              [mnAC, mxAC, hAC, ac],
+              [mnBD, mxBD, hBD, bd],
+              [mnXD, mxXD, hXD, xd],
             ]
-              .map(
-                ([a, b, h]) =>
-                  `<td class="rc ${h ? "hit" : "unused"}">${rt(a, b)}</td>`,
-              )
+              .map(([mn, mx, has, val]) => {
+                const hit =
+                  has && val >= mn * (1 - tol) && val <= mx * (1 + tol);
+                return `<td class="rc ${hit ? "hit" : "unused"}">${rt(mn, mx)}</td>`;
+              })
               .join("");
-            return `<tr><td>${catB}</td><td><span class="pname">${p.name}</span>${comB}</td>${tds}</tr>`;
+            return `<tr${matched ? ' class="matched"' : ""}>
+      <td>${catB}</td><td><span class="pname">${hl(name, q)}</span>${comB}</td>${tds}
+    </tr>`;
           })
           .join("");
 
+        const summaryLeft = anyInput
+          ? `TOTAL <span>${sorted.length}</span> · MATCHED <span style="color:var(--green)">${matchCount}</span>`
+          : `TOTAL <span>${sorted.length}</span> PATTERNS`;
+        const summaryRight =
+          anyInput && matchCount && !matchOnly
+            ? `<span class="hint">✦ 매칭 행이 위로 정렬됩니다</span>`
+            : "";
+
         el.innerHTML = `
-    <div class="summary fade">MATCHED <span>${matched.length}</span> PATTERNS</div>
+    <div class="summary fade">${summaryLeft}${summaryRight}</div>
     <div class="table-wrap fade">
       <table>
-        <thead><tr>
-          <th>카테고리</th><th>패턴명</th>
-          <th>XB</th><th>AC</th><th>BD</th><th>XD</th>
-        </tr></thead>
+        <thead><tr><th>카테고리</th><th>패턴명</th><th>XB</th><th>AC</th><th>BD</th><th>XD</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
       }
 
-      // ── PWA 설치 배너
+      function copyAddr() {
+        const addr =
+          "bc1ppf0u3aevdf2gqnuthwt9c6wgphem2lugg4a5m57egxnan4v3x9hskpfmur";
+        navigator.clipboard.writeText(addr).then(() => {
+          const msg = document.getElementById("copyMsg");
+          msg.textContent = "✓ 복사됐습니다";
+          setTimeout(() => (msg.textContent = ""), 2000);
+        });
+      }
       let deferredPrompt;
       window.addEventListener("beforeinstallprompt", (e) => {
         e.preventDefault();
@@ -808,13 +1106,12 @@
           });
         });
       });
-
-      // ── Service Worker 등록
       if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("./sw.js");
-        });
+        window.addEventListener("load", () =>
+          navigator.serviceWorker.register("./sw.js"),
+        );
       }
+      window.addEventListener("DOMContentLoaded", loadPatterns);
     </script>
   </body>
 </html>
