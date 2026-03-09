@@ -309,9 +309,36 @@ slider.addEventListener('input', () => {
   document.getElementById('tolDisplay').textContent = parseFloat(slider.value).toFixed(1) + '%';
   renderTable();
 });
-document.querySelectorAll('input[type=number]').forEach(el => {
-  el.addEventListener('input', renderTable);
-  el.addEventListener('keydown', e => { if(e.key==='Enter') renderTable(); });
+document.querySelectorAll('input[type=text][inputmode=decimal]').forEach(el => {
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter') renderTable();
+  });
+  el.addEventListener('input', () => {
+    const pos = el.selectionStart;
+    const hasDot = el.value.includes('.');
+
+    // 숫자와 소수점 외 문자 제거 (IME 한글 등 포함)
+    let clean = el.value.replace(/[^0-9.]/g, '');
+    // 소수점 중복 제거 (첫 번째만 유지)
+    const dotIdx = clean.indexOf('.');
+    if (dotIdx !== -1) {
+      clean = clean.slice(0, dotIdx + 1) + clean.slice(dotIdx + 1).replace(/\./g, '');
+    }
+    if (el.value !== clean) {
+      el.value = clean;
+    }
+
+    // 소수점 없고 숫자 2자리 이상이면 자동 삽입
+    if (!el.value.includes('.')) {
+      const raw = el.value.replace(/[^0-9]/g, '');
+      if (raw.length >= 2) {
+        el.value = raw[0] + '.' + raw.slice(1);
+        el.setSelectionRange(el.value.length, el.value.length);
+      }
+    }
+
+    renderTable();
+  });
 });
 
 function hl(text, q) {
